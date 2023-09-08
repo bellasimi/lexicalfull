@@ -1,19 +1,39 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+import './setupEnv';
+import './index.css';
+
+import * as React from 'react';
+import {createRoot} from 'react-dom/client';
+
+import App from './App';
+
+// Handle runtime errors
+const showErrorOverlay = (err: Event) => {
+  const ErrorOverlay = customElements.get('vite-error-overlay');
+  if (!ErrorOverlay) {
+    return;
+  }
+  const overlay = new ErrorOverlay(err);
+  const body = document.body;
+  if (body !== null) {
+    body.appendChild(overlay);
+  }
+};
+
+window.addEventListener('error', showErrorOverlay);
+window.addEventListener('unhandledrejection', ({reason}) =>
+  showErrorOverlay(reason),
 );
-root.render(
+
+createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

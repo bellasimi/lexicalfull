@@ -1,11 +1,29 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "baseUrl": "./src",
+    "paths": {
+      "@store": ["./app/store"],
+      "@components/*": ["./components/*"],
+      "@features/*": ["./features/*"],
+      "@editorSlice/*": ["./features/editorSlice"],
+      "@constants/*": ["./constants/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@i18n/*": ["./i18n/*"],
+      "@lib/*": ["./lib/*"],
+      "@axios/*": ["./lib/axios/*"],
+      "@customTypes/*": ["./types/*"],
+      "@data/*": ["./mocks/data/*"],
+      "@browser": ["./mocks/browser"],
+      "@server": ["./mocks/server"],
+      "@services/*": ["./services/*"],
+      "@mocks/*": ["./mocks/*"],
+      "@utils/*": ["./utils/*"],
+      "@node_modules/*": ["./node_modules/*"],
+      "@images/*": ["./assets/images/*"],
+      "@shared/*": ["./shared/src/*"]
+    },
+    "target": "es6",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -20,7 +38,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
