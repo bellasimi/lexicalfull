@@ -8,16 +8,6 @@
 
 @import "https://fonts.googleapis.com/css?family=Reenie+Beanie";
 
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: #eee;
-  padding: 0 20px;
-}
-
 header {
   max-width: 580px;
   margin: auto;
@@ -53,6 +43,7 @@ header h1 {
   position: relative;
   line-height: 1.7;
   font-weight: 400;
+  border: 1px solid black;
 }
 
 .editor-shell .editor-container {

@@ -19,8 +19,7 @@
       "@mocks/*": ["./mocks/*"],
       "@utils/*": ["./utils/*"],
       "@node_modules/*": ["./node_modules/*"],
-      "@images/*": ["./assets/images/*"],
-      "@shared/*": ["./shared/src/*"]
+      "@images/*": ["./assets/images/*"]
     },
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
