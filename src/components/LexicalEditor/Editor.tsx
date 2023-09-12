@@ -16,12 +16,10 @@ import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import useLexicalEditable from "@lexical/react/useLexicalEditable";
-import * as React from "react";
 import { useEffect, useState } from "react";
 import { CAN_USE_DOM } from "./shared/src/canUseDOM";
 import { useSettings } from "./context/SettingsContext";
@@ -52,18 +50,26 @@ import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
 import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
+import HtmlPlugin from "./plugins/HtmlPlugin";
+import Viewer from "./Viewer";
 
-const skipCollaborationInit =
-  // @ts-ignore
-  window.parent != null && window.parent.frames.right === window;
+interface Props {
+  readonly?: boolean;
+  initialValue?: string;
+  nodes?: any;
+  onValueChange: (value: string) => void;
+}
 
-export default function Editor(): JSX.Element {
+export default function Editor({
+  readonly,
+  initialValue,
+  nodes,
+  onValueChange,
+}: Props): JSX.Element {
   const { historyState } = useSharedHistoryContext();
+
   const {
     settings: {
-      isCollab,
-      isAutocomplete,
-      isMaxLength,
       isCharLimit,
       isCharLimitUtf8,
       isRichText,
@@ -74,10 +80,9 @@ export default function Editor(): JSX.Element {
       tableCellBackgroundColor,
     },
   } = useSettings();
+
   const isEditable = useLexicalEditable();
-  const text = isCollab
-    ? "Enter some collaborative rich text..."
-    : isRichText
+  const text = isRichText
     ? "Enter some rich text..."
     : "Enter some plain text...";
   const placeholder = <Placeholder>{text}</Placeholder>;
@@ -118,6 +123,10 @@ export default function Editor(): JSX.Element {
     };
   }, [isSmallWidthViewport]);
 
+  if (readonly) {
+    return <Viewer initialValue={initialValue} />;
+  }
+
   return (
     <>
       {isRichText && <ToolbarPlugin />}
@@ -126,81 +135,67 @@ export default function Editor(): JSX.Element {
           !isRichText ? "plain-text" : ""
         }`}
       >
+        <HtmlPlugin initialValue={initialValue} onValueChange={onValueChange} />
         <DragDropPaste />
         <AutoFocusPlugin />
         <ClearEditorPlugin />
         <ComponentPickerPlugin />
         <HashtagPlugin />
         <AutoLinkPlugin />
-        {isRichText ? (
+        <RichTextPlugin
+          contentEditable={
+            <div className="editor-scroller">
+              <div className="editor" ref={onRef}>
+                <ContentEditable />
+              </div>
+            </div>
+          }
+          placeholder={placeholder}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <MarkdownShortcutPlugin />
+        <CodeHighlightPlugin />
+        <ListPlugin />
+        <CheckListPlugin />
+        <ListMaxIndentLevelPlugin maxDepth={7} />
+        <TablePlugin
+          hasCellMerge={tableCellMerge}
+          hasCellBackgroundColor={tableCellBackgroundColor}
+        />
+        <TableCellResizer />
+        <NewTablePlugin cellEditorConfig={cellEditorConfig}>
+          <AutoFocusPlugin />
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable className="TableNode__contentEditable" />
+            }
+            placeholder={null}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+          <HistoryPlugin />
+          <ImagesPlugin captionsEnabled={false} />
+          <LinkPlugin />
+          <LexicalClickableLinkPlugin />
+          <FloatingTextFormatToolbarPlugin />
+        </NewTablePlugin>
+        <ImagesPlugin />
+        <InlineImagePlugin />
+        <LinkPlugin />
+        {!isEditable && <LexicalClickableLinkPlugin />}
+        <HorizontalRulePlugin />
+        <TabFocusPlugin />
+        <TabIndentationPlugin />
+        <CollapsiblePlugin />
+        <LayoutPlugin />
+        {floatingAnchorElem && (
           <>
-            <RichTextPlugin
-              contentEditable={
-                <div className="editor-scroller">
-                  <div className="editor" ref={onRef}>
-                    <ContentEditable />
-                  </div>
-                </div>
-              }
-              placeholder={placeholder}
-              ErrorBoundary={LexicalErrorBoundary}
+            <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+            <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
+            <TableCellActionMenuPlugin
+              anchorElem={floatingAnchorElem}
+              cellMerge={true}
             />
-            <MarkdownShortcutPlugin />
-            <CodeHighlightPlugin />
-            <ListPlugin />
-            <CheckListPlugin />
-            <ListMaxIndentLevelPlugin maxDepth={7} />
-            <TablePlugin
-              hasCellMerge={tableCellMerge}
-              hasCellBackgroundColor={tableCellBackgroundColor}
-            />
-            <TableCellResizer />
-            <NewTablePlugin cellEditorConfig={cellEditorConfig}>
-              <AutoFocusPlugin />
-              <RichTextPlugin
-                contentEditable={
-                  <ContentEditable className="TableNode__contentEditable" />
-                }
-                placeholder={null}
-                ErrorBoundary={LexicalErrorBoundary}
-              />
-              <HistoryPlugin />
-              <ImagesPlugin captionsEnabled={false} />
-              <LinkPlugin />
-              <LexicalClickableLinkPlugin />
-              <FloatingTextFormatToolbarPlugin />
-            </NewTablePlugin>
-            <ImagesPlugin />
-            <InlineImagePlugin />
-            <LinkPlugin />
-            {!isEditable && <LexicalClickableLinkPlugin />}
-            <HorizontalRulePlugin />
-            <TabFocusPlugin />
-            <TabIndentationPlugin />
-            <CollapsiblePlugin />
-            <LayoutPlugin />
-            {floatingAnchorElem && (
-              <>
-                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
-                <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
-                <TableCellActionMenuPlugin
-                  anchorElem={floatingAnchorElem}
-                  cellMerge={true}
-                />
-                <FloatingTextFormatToolbarPlugin
-                  anchorElem={floatingAnchorElem}
-                />
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <PlainTextPlugin
-              contentEditable={<ContentEditable />}
-              placeholder={placeholder}
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-            <HistoryPlugin externalHistoryState={historyState} />
+            <FloatingTextFormatToolbarPlugin anchorElem={floatingAnchorElem} />
           </>
         )}
         {(isCharLimit || isCharLimitUtf8) && (
@@ -213,8 +208,6 @@ export default function Editor(): JSX.Element {
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
         <ActionsPlugin isRichText={isRichText} />
       </div>
-      {/* TODO: 디버깅여부 
-      {showTreeView && <TreeViewPlugin />} */}
     </>
   );
 }
