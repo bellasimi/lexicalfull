@@ -56,6 +56,7 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 interface Props {
   readonly?: boolean;
   initialValue?: string;
+  editorState?: string;
   nodes?: any;
   onValueChange: (value: string) => void;
 }
@@ -63,6 +64,7 @@ interface Props {
 export default function Editor({
   readonly,
   initialValue,
+  editorState,
   nodes,
   onValueChange,
 }: Props): JSX.Element {
@@ -124,7 +126,7 @@ export default function Editor({
   }, [isSmallWidthViewport]);
 
   if (readonly) {
-    return <Viewer initialValue={initialValue} />;
+    return <Viewer editorState={editorState} />;
   }
 
   return (
@@ -135,7 +137,11 @@ export default function Editor({
           !isRichText ? "plain-text" : ""
         }`}
       >
-        <HtmlPlugin initialValue={initialValue} onValueChange={onValueChange} />
+        <OnChangePlugin
+          onChange={(editorState) => {
+            onValueChange(JSON.stringify(editorState));
+          }}
+        />
         <HistoryPlugin externalHistoryState={historyState} />
         <DragDropPaste />
         <AutoFocusPlugin />

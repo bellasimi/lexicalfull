@@ -17,6 +17,7 @@ import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
 interface Props {
   readonly?: boolean;
   initialValue?: string;
+  editorState?: string;
   onValueChange?: (value: any) => void;
   config?: any;
   nodes?: any;
@@ -25,6 +26,7 @@ interface Props {
 const LexicalEditor = ({
   readonly,
   initialValue,
+  editorState,
   onValueChange = () => null,
   config,
   nodes,
@@ -40,6 +42,8 @@ const LexicalEditor = ({
     editable: !readonly,
   };
 
+  console.log("state", initialConfig.editorState);
+
   return (
     <SettingsContext>
       <LexicalComposer initialConfig={initialConfig}>
@@ -50,6 +54,7 @@ const LexicalEditor = ({
                 <Editor
                   readonly={readonly}
                   initialValue={initialValue}
+                  editorState={editorState}
                   onValueChange={onValueChange}
                   nodes={nodes}
                 />

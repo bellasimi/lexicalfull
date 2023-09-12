@@ -1,33 +1,40 @@
 import { useEffect } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $generateNodesFromDOM } from "@lexical/html";
-import { $insertNodes, $getRoot } from "lexical";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { $getRoot } from "lexical";
+import { $convertFromMarkdownString } from "@lexical/markdown";
+import { $isCodeNode } from "@lexical/code";
+import { PLAYGROUND_TRANSFORMERS } from "./plugins/MarkdownTransformers";
 
 interface Props {
-  initialValue?: string;
+  editorState?: string;
 }
 
-const Viewer = ({ initialValue }: Props) => {
+const Viewer = ({ editorState }: Props) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    if (!initialValue) {
+    if (!editorState) {
       return;
     }
 
+    const state = editor.parseEditorState(editorState);
+    editor.setEditorState(state);
+
     editor.update(() => {
       const root = $getRoot();
-      root.clear();
-
-      const parser = new DOMParser();
-      const dom = parser.parseFromString(initialValue, "text/html");
-      const nodes = $generateNodesFromDOM(editor, dom);
-      $insertNodes(nodes);
+      const firstChild = root.getFirstChild();
+      if ($isCodeNode(firstChild) && firstChild.getLanguage() === "markdown") {
+        $convertFromMarkdownString(
+          firstChild.getTextContent(),
+          PLAYGROUND_TRANSFORMERS
+        );
+      }
+      root.selectEnd();
     });
-  }, [initialValue, editor]);
+  }, [editorState, editor]);
 
   return (
     <div className="editor-container p-10">
