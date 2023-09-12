@@ -44,6 +44,7 @@ import { DialogActions } from "../../ui/Dialog";
 import FileInput from "../../ui/FileInput";
 import Select from "../../ui/Select";
 import TextInput from "../../ui/TextInput";
+import { getImageUrlFromServer } from "@components/LexicalEditor/utils/getImageUrlFromServer";
 
 export type InsertInlineImagePayload = Readonly<InlineImagePayload>;
 
@@ -77,16 +78,13 @@ export function InsertInlineImageDialog({
     setPosition(e.target.value as Position);
   };
 
-  const loadImage = (files: FileList | null) => {
-    const reader = new FileReader();
-    reader.onload = function () {
-      if (typeof reader.result === "string") {
-        setSrc(reader.result);
+  const loadImage = async (files: FileList | null) => {
+    if (files) {
+      const imageUrl = await getImageUrlFromServer(files[0]);
+
+      if (imageUrl) {
+        setSrc(`${process.env.REACT_APP_HOST}${imageUrl}`);
       }
-      return "";
-    };
-    if (files !== null) {
-      reader.readAsDataURL(files[0]);
     }
   };
 
