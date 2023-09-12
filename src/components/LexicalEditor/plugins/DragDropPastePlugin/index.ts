@@ -13,6 +13,8 @@ import { COMMAND_PRIORITY_LOW } from "lexical";
 import { useEffect } from "react";
 
 import { INSERT_IMAGE_COMMAND } from "../ImagesPlugin";
+import { postImage } from "@services/image";
+import { getImageUrlFromServer } from "@components/LexicalEditor/utils/getImageUrlFromServer";
 
 const ACCEPTABLE_IMAGE_TYPES = [
   "image/",
@@ -33,12 +35,15 @@ export default function DragDropPaste(): null {
             files,
             [ACCEPTABLE_IMAGE_TYPES].flatMap((x) => x)
           );
-          for (const { file, result } of filesResult) {
+          for (const { file } of filesResult) {
             if (isMimeType(file, ACCEPTABLE_IMAGE_TYPES)) {
-              editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-                altText: file.name,
-                src: result,
-              });
+              const imageUrl = getImageUrlFromServer(file);
+              if (imageUrl) {
+                editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
+                  altText: file.name,
+                  src: `${process.env.REACT_APP_HOST}${imageUrl}`,
+                });
+              }
             }
           }
         })();
