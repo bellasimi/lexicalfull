@@ -262,15 +262,6 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
         onSelect: () =>
           editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined),
       }),
-      new ComponentPickerOption("GIF", {
-        icon: <i className="icon gif" />,
-        keywords: ["gif", "animate", "image", "file"],
-        onSelect: () =>
-          editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-            altText: "Cat typing on a laptop",
-            src: catTypingGif,
-          }),
-      }),
       new ComponentPickerOption("Image", {
         icon: <i className="icon image" />,
         keywords: ["image", "photo", "picture", "file"],

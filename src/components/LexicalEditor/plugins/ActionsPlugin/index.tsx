@@ -211,22 +211,6 @@ export default function ActionsPlugin({
       >
         <i className="markdown" />
       </button>
-      {isCollabActive && (
-        <button
-          className="action-button connect"
-          onClick={() => {
-            editor.dispatchCommand(TOGGLE_CONNECT_COMMAND, !connected);
-          }}
-          title={`${
-            connected ? "Disconnect" : "Connect"
-          } Collaborative Editing`}
-          aria-label={`${
-            connected ? "Disconnect from" : "Connect to"
-          } a collaborative editing server`}
-        >
-          <i className={connected ? "disconnect" : "connect"} />
-        </button>
-      )}
       {modal}
     </div>
   );
@@ -251,7 +235,7 @@ function ShowClearDialog({
           }}
         >
           Clear
-        </Button>{" "}
+        </Button>
         <Button
           onClick={() => {
             editor.focus();
