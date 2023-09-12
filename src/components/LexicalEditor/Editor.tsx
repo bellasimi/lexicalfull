@@ -51,6 +51,7 @@ import ContentEditable from "./ui/ContentEditable";
 import Placeholder from "./ui/Placeholder";
 import HtmlPlugin from "./plugins/HtmlPlugin";
 import Viewer from "./Viewer";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 
 interface Props {
   readonly?: boolean;
@@ -135,6 +136,7 @@ export default function Editor({
         }`}
       >
         <HtmlPlugin initialValue={initialValue} onValueChange={onValueChange} />
+        <HistoryPlugin externalHistoryState={historyState} />
         <DragDropPaste />
         <AutoFocusPlugin />
         <ClearEditorPlugin />

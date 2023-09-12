@@ -11,7 +11,7 @@ import { SharedAutocompleteContext } from "./context/SharedAutocompleteContext";
 import { SharedHistoryContext } from "./context/SharedHistoryContext";
 import Editor from "./Editor";
 import { TableContext } from "./plugins/TablePlugin";
-import PlaygroundNodes from "./nodes/TableCellNodes";
+import PlaygroundNodes from "./nodes/PlaygroundNodes";
 import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
 
 interface Props {
@@ -22,25 +22,27 @@ interface Props {
   nodes?: any;
 }
 
-const defaultConfig = {
-  namespace: "default",
-  nodes: [...PlaygroundNodes],
-  onError: (error: Error) => {
-    throw error;
-  },
-  theme: PlaygroundEditorTheme,
-};
-
 const LexicalEditor = ({
   readonly,
   initialValue,
   onValueChange = () => null,
-  config = defaultConfig,
+  config,
   nodes,
 }: Props): JSX.Element => {
+  const initialConfig = {
+    namespace: "default",
+    nodes: [...PlaygroundNodes],
+    onError: (error: Error) => {
+      throw error;
+    },
+    theme: PlaygroundEditorTheme,
+    ...config,
+    editable: !readonly,
+  };
+
   return (
     <SettingsContext>
-      <LexicalComposer initialConfig={{ ...config, editable: !readonly }}>
+      <LexicalComposer initialConfig={initialConfig}>
         <SharedHistoryContext>
           <TableContext>
             <SharedAutocompleteContext>
