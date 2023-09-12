@@ -30,7 +30,7 @@ const Viewer = ({ initialValue }: Props) => {
   }, [initialValue, editor]);
 
   return (
-    <div className="editor-container">
+    <div className="editor-container p-10">
       <RichTextPlugin
         contentEditable={<ContentEditable />}
         placeholder={<></>}
