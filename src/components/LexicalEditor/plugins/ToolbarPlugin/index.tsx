@@ -75,7 +75,6 @@ import * as React from "react";
 import { IS_APPLE } from "../../shared/src/environment";
 
 import useModal from "../../hooks/useModal";
-import catTypingGif from "@images/cat-typing.gif";
 import DropDown, { DropDownItem } from "../../ui/DropDown";
 import DropdownColorPicker from "../../ui/DropdownColorPicker";
 import { getSelectedNode } from "../../utils/getSelectedNode";
@@ -1045,18 +1044,6 @@ export default function ToolbarPlugin(): JSX.Element {
             >
               <i className="icon image" />
               <span className="text">Inline Image</span>
-            </DropDownItem>
-            <DropDownItem
-              onClick={() =>
-                insertGifOnClick({
-                  altText: "Cat typing on a laptop",
-                  src: catTypingGif,
-                })
-              }
-              className="item"
-            >
-              <i className="icon gif" />
-              <span className="text">GIF</span>
             </DropDownItem>
             <DropDownItem
               onClick={() => {
