@@ -11,6 +11,14 @@
 
 @import "https://fonts.googleapis.com/css?family=Reenie+Beanie";
 
+ul {
+  list-style: disc;
+}
+
+ol {
+  list-style: decimal;
+}
+
 :root {
   --main-line: #e4e6ed;
 }
